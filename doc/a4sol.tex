@@ -1,0 +1,138 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{amssymb}
+\usepackage{nicefrac}
+\usepackage{listings} % For displaying code
+\usepackage{algorithm2e} % pseudo-code
+
+% Answers
+\def\ans#1{\par\gre{Answer: #1}}
+
+% Colors
+\definecolor{blu}{rgb}{0,0,1}
+\def\blu#1{{\color{blu}#1}}
+\definecolor{gre}{rgb}{0,.5,0}
+\def\gre#1{{\color{gre}#1}}
+\definecolor{red}{rgb}{1,0,0}
+\def\red#1{{\color{red}#1}}
+\def\norm#1{\|#1\|}
+
+% Math
+\def\R{\mathbb{R}}
+\def\argmax{\mathop{\rm arg\,max}}
+\newcommand{\argmin}[1]{\mathop{\hbox{argmin}}_{#1}}
+\newcommand{\mat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\alignStar}[1]{\begin{align*}#1\end{align*}}
+\def\half{\frac 1 2}
+\def\cond{\; | \;}
+
+% LaTeX
+\newcommand{\fig}[2]{\includegraphics[width=#1\textwidth]{a4f/#2}}
+\newcommand{\centerfig}[2]{\begin{center}\includegraphics[width=#1\textwidth]{a4f/#2}\end{center}}
+\def\items#1{\begin{itemize}#1\end{itemize}}
+\def\enum#1{\begin{enumerate}#1\end{enumerate}}
+
+
+\begin{document}
+
+\title{CPSC 540 Assignment 4 (due March 14 at midnight)}
+\author{}
+\date{}
+\maketitle
+\vspace{-4em}
+
+
+The assignment instructions are the same as for the previous assignment.
+
+
+\blu{\enum{
+\item Name(s):
+\item Student ID(s):
+}}
+
+
+
+\section{Discrete Markov Chains}
+
+\subsection{Sampling, Inference, and Decoding}
+
+The function \emph{example\_markovChain.jl} loads the initial state probabilities and transition probabilities for a Markov chain model,
+\[
+p(x_1,x_2,\dots,x_d) = p(x_1)\prod_{j=2}^{d}{p(x_j\cond x_{j-1})},
+\]
+corresponding to the ``grad student Markov chain'' from class.
+
+\enum{
+\item Write a function, \emph{sampleAncestral}, that uses ancestral sampling to sample a sequence $x$ from this Markov chain of length $d$. \blu{Hand in this code and report the univariate marginal probabilities for time 50 using a Monte Carlo estimate based on 10000 samples.} (You can use \emph{sampleDiscrete} in \emph{misc.jl} to sample from a discrete probability mass function).
+\item Write a function, \emph{marginalCK}, that uses the CK equations to compute the exact univariate marginals up to a given time $d$. \blu{Hand in this code, report all exact univariate marginals, and report how this differs from the marginals in the previous question.}
+\item Write a function, \emph{viterbiDecode}, that uses the Viterbi decoding algorithm for Markov chains to find the optimal decoding up to a time $d$. \blu{Hand in this code and report the optimal decoding of the Markov chain up to time 50 and up to 100, and say how this differs from the sequence defined by the most likely states at each time up to time 100 (the states maximizing the marginal probabilities)}.
+\item \blu{Report all the univariate conditional probabilities at time 50 if the student starts in grad school, $p(x_{50} = c \cond  x_1 = 3)$ for all $c$}.
+}
+Hint: for parts 2-3, you can use a $7$ by $d$ matrix $M$ to represent the dynamic programming table, and for part 3 you can use another matrix $B$ containing the argmax values that lead to each entry in the table.  For the conditional question, you can answer it by changing the input to the existing code.
+
+
+
+
+
+\subsection{Conditioning Queries Requiring Inference}
+
+Next consider the following cases (which require implementing an extra rejection step or backward phase):
+\enum{
+\item \blu{Report all the univariate conditional probabilities $p(x_5 = c \cond  x_{10} = 6)$ (``where are you likely to be 5 years after graduation if you are in academia 10 years'') obtained using a Monte Carlo estimate based on 10000 samples and rejection sampling. Also report the number of samples accepted among the 10000 samples.}
+\item Write a function, \emph{sampleBackwards} that uses backwards sampling to sample sequences of length $d$ given a particular value of $x_d = 1$. \blu{Hand in this code and report all the univariate conditional probabilities $p(x_5 = c \cond  x_{10} = 6)$ obtained using a Monte Carlo estimate based on 10000 samples}.
+\item Write a function, \emph{forwardBackwards} that is able compute all exact univariate conditionals $p(x_j \cond  x_d = c)$ in $O(dk^2)$ for a length-$d$ sentence. \blu{Hand in the code and report all the exact univariate conditionals $p(x_5 = c \cond  x_{10} = 6)$.}
+}
+
+
+\section{Directed Acyclic Graphical Models}
+
+Coming soon...
+
+
+
+\section{Very-Short Answer Questions}
+
+Coming soon...
+
+
+
+\section{Relevant Papers for Project}
+
+\subsection{Finding Relevant Papers}
+
+To help you make progress on your project, for this part you should \blu{hand in a list of 10 academic papers} related to your current project topic. Finding related work is often one of the first steps towards getting a new project started, and it gives you an idea of what has (and has not) been explored. Some strategies for finding related papers are:
+\enum{
+\item Use Google: try the keywords you think are most relevant. Asking people in your lab (or related labs) for references is also often a good starting point.
+\item Once you have found a few related papers, read their introduction section to find references that these papers think are worth mentioning.
+\item Once you have found a few related papers, use Google Scholar to look through the list of references that are \emph{citing} these papers (particularly for recent ones). You may have to do some sifting if there are a lot of citations. Reasonable criteria to sift through large reference lists include looking for the ones with the most citations or focusing on the more recent ones (then returning to Step 2 to find the more-relevant older references).
+}
+For this question you only need to provide a list, but in Assignment 5 you will have to do a survey of 10 papers. So it's worth trying to identify papers that are both relevant and important at this point.
+For some types of projects it will be easier to find papers than others. If you are having trouble, post on Piazza.
+
+Although the papers do not need to all be machine learning papers, the course project does need to be related to machine learning in some way, so at least a subset of the papers should be machine learning papers. Here is a rough guide to some of the most reputable places to where you see machine learning works published:
+\items{
+\item The International Conference on Machine Learning (ICML) and the conference on Advances in Neural Information Processing (NeurIPS) are the top places to publish machine learning work. The Journal of Machine Learning Research (JMLR) is the top journal, although in this field conference publications are usually viewed as more prestigious.
+\item Other good venues include AISTATS (emphasis on statistics), UAI (emphasis on graphical models), COLT (emphasis on theory), ICLR (emphasis on deep learning), ECML-PKDD (European version of ICML), CVPR and ICCV/ECCV (emphasis on computer vision), ACL and EMNLP (emphasis on language), KDD (emphasis on data mining),  AAAI/IJCAI (emphasis on AI more broadly), JRSSB and Annals of Stats (emphasis on statistics more broadly), and Science and Nature (emphasis on science more broadly).
+}
+
+\subsection{Paper Review}
+
+Among your list of 10 papers, choose one paper and \blu{write a review of this paper}. It makes sense to choose a paper that is closely-related to your project or to choose one of the most important-looking papers. The review should have two parts:
+\enum{
+\item A short summary of the contributions of the paper. Say what problem the paper is addressing, why this is an important problems, what is proposed, and how it is being evaluated.
+\item A list of strengths and weaknesses of the paper, and whether the claims are appropriately evaluated. For ideas of what issues to discuss, see the JMLR guidelines for reviewers:\\
+\url{http://www.jmlr.org/reviewer-guide.html}
+}
+Note that you should include a non-empty list of strengths \emph{and} weaknesses. 
+Many students when doing their first reviews focus either purely on strengths or purely on weaknesses. It's important to recognize that all papers have weaknesses or limitations (even ones written by famous people or that are published in impressive places or that proved to be historically important) and all papers have strengths or at least a motivation (the authors must have thought it was worth writing for some reason).
+
+
+ 
+\end{document}
