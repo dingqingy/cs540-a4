@@ -70,5 +70,5 @@ end
 
 ### For vector p given discrete probabilities, generates a random sample
 function sampleDiscrete(p)
-	minimum(find(cumsum(p[:]).> rand()))
+	minimum(findall(cumsum(p[:]).> rand()))
 end
