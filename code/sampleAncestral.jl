@@ -8,14 +8,5 @@ function sampleAncestral(p1, pt, d)
 	for i in 2:d
 		x[i] = sampleDiscrete(pt[x[i-1], :])
 	end
-	return x[d]
-end
-
-function marginalCK(p1, pt, d, k)
-	M = zeros(k, d)
-	M[:, 1] = p1
-	for i = 2:d
-		M[:, i] = pt' * M[:, i-1]
-	end
-	return M
+	return x
 end
