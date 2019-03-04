@@ -1,5 +1,5 @@
 # Load X and y variable
-using JLD
+using JLD, Printf
 data = load("../data/gradChain.jld")
 (p1,pt) = (data["p1"],data["pt"])
 k = length(p1)
@@ -13,7 +13,6 @@ k = length(p1)
 # 	sample[i] = sampleAncestral(p1, pt, 50)[50]
 # end
 
-# using StatsBase, Printf
 # count = counts(sample)
 # marginal_MC = count / 50000
 # for i = 1:k
@@ -88,6 +87,7 @@ for i = 1:k
 end
 
 println("\n############ 1.2.2 ############")
+include("marginalCK.jl")
 margin = marginalCK(p1, pt, 10, k)
 # construct reverse transition matrix
 pr = zeros(10-5, k, k)
@@ -108,22 +108,22 @@ end
 # println(pr[4, :, :])
 # println(pr[5, :, :])
 
-########### The rest of 1.2.2 is buggy ###########
-# counting = zeros(Int64, k)
-# for i = 1:10
-# init = zeros(Int8, k)
-# init[6] = 1 # start for grad school
-# 	for j = 1:5
-# 		sample = sampleAncestral(init, pr[j, :, :], 1)[1]
-# 		# reset init
-# 		init = zeros(Int8, k)
-# 		init[sample] = 1
-# 		# print(typeof(sample))
-# 	end
-# 	print(sample)
-# end
+acc = zeros(Int64, k) # accumulator for counting
+for i = 1:10000
+init = zeros(Int8, k)
+init[6] = 1 # start for grad school
+	for j = 1:5
+		global bk_sample = sampleAncestral(init, pr[j, :, :], 2)[2]
+		# reset init
+		init = zeros(Int8, k)
+		init[bk_sample] = 1
+		# print(typeof(sample))
+	end
+	# println(bk_sample)
+	acc[bk_sample] += 1
+end
 
-# backward_cond = counts ./ 10000.0
-# for i = 1:k
-# 	@printf("MCMC conditional marginal of state %d is %f\n", i, counts[i])
-# end
+backward_cond = acc ./ 10000.0
+for i = 1:k
+	@printf("MCMC conditional marginal of state %d is %f\n", i, backward_cond[i])
+end
