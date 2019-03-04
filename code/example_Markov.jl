@@ -6,10 +6,10 @@ k = length(p1)
 
 println("############ 1.1.1 ############")
 
-# use MC estimate to generate 50000 samples
+# use MC estimate to generate 10000 samples
 include("sampleAncestral.jl")
-sample = zeros(Int8, 50000)
-for i = 1:50000
+sample = zeros(Int8, 10000)
+for i = 1:10000
 	sample[i] = sampleAncestral(p1, pt, 50)
 end
 
@@ -67,4 +67,41 @@ init[3] = 1 # start for grad school
 conditional = marginalCK(init, pt, 50, k)
 for i = 1:k
 	@printf("exact marginal of state %d at time 50 starting from grad school is %f\n", i, conditional[i, 50])
+end
+
+println("\n############ 1.2.1 ############")
+# use MC estimate to generate 10000 samples
+n_experiments = 10000
+sample = zeros(Int8, (n_experiments, 2))
+for i = 1:n_experiments
+	sample[i, :] = sampleConditioning(p1, pt, 5, 10)
+end
+
+x_10 = 6
+sample_accepted = sample[sample[:, 2].==x_10, 1]
+@printf("The number of sample accepted is %d.\n", size(sample_accepted)[1])
+for i = 1:k
+	@printf("P(X5= %d|X10=6) using MC with rejection is %f\n", i, sum(sample_accepted .== i)/size(sample_accepted)[1])
+end
+
+println("\n############ 1.2.2 ############")
+# use backward sampling to generate 10000 samples
+n_experiments = 10000
+sample = zeros(Int8, n_experiments)
+x_10 = 6
+for i = 1:n_experiments
+	sample[i] = sampleBackwards(pt, x_10, 5, 10)
+end
+
+for i = 1:k
+	@printf("P(X5= %d|X10=6) using MC with backward sampling is %f\n", i, sum(sample .== i)/size(sample)[1])
+end
+
+println("\n############ 1.2.3 ############")
+conditionals = forwardBackwards(pt, x_10, 5, 10, k)
+#conditionals = forwardBackwards(pt, 3, 50, 1, k)
+## p(x_5|x_10=6)
+
+for i = 1:k
+	@printf("P(x_5=%i|x_10=6)= %f\n", i, conditionals[i])
 end

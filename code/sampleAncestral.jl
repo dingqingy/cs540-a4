@@ -1,7 +1,7 @@
 include("misc.jl")
 
 function sampleAncestral(p1, pt, d)
-	
+
 	x = zeros(Int8, d)
 	# at time 1
 	x[1] = sampleDiscrete(p1)
@@ -9,6 +9,30 @@ function sampleAncestral(p1, pt, d)
 		x[i] = sampleDiscrete(pt[x[i-1], :])
 	end
 	return x[d]
+end
+
+function sampleConditioning(p1, pt, m, d) # m: intermediate state
+
+	x = zeros(Int8, d)
+	# at time 1
+	x[1] = sampleDiscrete(p1)
+	for i in 2:d
+		x[i] = sampleDiscrete(pt[x[i-1], :])
+	end
+	return [x[m], x[d]]
+end
+
+function sampleBackwards(pt, xd, i, d)
+#pt: transition probability
+#xd: final state
+#i: initial time, d: final time
+	x = zeros(Int8, d-i+1)
+	# at time 1
+	x[d-i+1] = xd
+	for j in d-1:-1:i
+		x[j-i+1] = sampleDiscrete((pt[:, x[j+1-i+1]])/sum(pt[:, x[j+1-i+1]]))
+	end
+	return x[1]
 end
 
 function marginalCK(p1, pt, d, k)

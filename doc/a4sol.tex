@@ -42,7 +42,7 @@
 
 \begin{document}
 
-\title{CPSC 540 Assignment 4 (due March 14 at midnight)}
+\title{CPSC 540 Assignment 4 (due March 15 at midnight)}
 \author{}
 \date{}
 \maketitle
@@ -86,21 +86,104 @@ Hint: for parts 2-3, you can use a $7$ by $d$ matrix $M$ to represent the dynami
 Next consider the following cases (which require implementing an extra rejection step or backward phase):
 \enum{
 \item \blu{Report all the univariate conditional probabilities $p(x_5 = c \cond  x_{10} = 6)$ (``where are you likely to be 5 years after graduation if you are in academia 10 years'') obtained using a Monte Carlo estimate based on 10000 samples and rejection sampling. Also report the number of samples accepted among the 10000 samples.}
-\item Write a function, \emph{sampleBackwards} that uses backwards sampling to sample sequences of length $d$ given a particular value of $x_d = 1$. \blu{Hand in this code and report all the univariate conditional probabilities $p(x_5 = c \cond  x_{10} = 6)$ obtained using a Monte Carlo estimate based on 10000 samples}.
+\item Write a function, \emph{sampleBackwards} that uses backwards sampling to sample sequences of length $d$ given a particular value of \red{the last value $x_d$}. \blu{Hand in this code and report all the univariate conditional probabilities $p(x_5 = c \cond  x_{10} = 6)$ obtained using a Monte Carlo estimate based on 10000 samples}.
 \item Write a function, \emph{forwardBackwards} that is able compute all exact univariate conditionals $p(x_j \cond  x_d = c)$ in $O(dk^2)$ for a length-$d$ sentence. \blu{Hand in the code and report all the exact univariate conditionals $p(x_5 = c \cond  x_{10} = 6)$.}
 }
 
 
 \section{Directed Acyclic Graphical Models}
 
-Coming soon...
 
+\subsection{D-Separation}
+
+Consider a  directed acyclic graphical (DAG) model with the following graph structure:
+\centerfig{.4}{DAG}
+
+Assuming that the conditional independence properties are faithful to the graph, using d-separation \blu{briefly explain why the following are true or false:}
+\enum{
+\item $H \perp I$.
+\item $H \perp I \cond A$.
+\item $H \perp I \cond J$.
+\item $H \perp I \cond A, J$.
+\item $C \perp I$.
+\item $C \perp I \cond J$.
+\item $C \perp I \cond H$.
+\item $C \perp I \cond A, H$.
+\item $C \perp I \cond E, H, J$.
+}
+
+
+\subsection{Exact Inference}
+
+Consider a  directed acyclic graphical (DAG) model with the following graph structure:
+\centerfig{.4}{DAG2}
+Assume that all variables are binary and that we use the following parameterization of the network:
+\begin{align*}
+& p(A = 1) = 0.7\\
+& p(B = 1 \cond A = 0) = 0.8\\
+& p(B = 1 \cond A = 1) = 1.0\\
+& p(C = 1) = 0.8\\
+& p(D = 1 \cond B = 0) = 0.8\\
+& p(D = 1 \cond B = 1) = 0.6\\
+& p(E = 1 \cond B = 0, C = 0) = 0.3\\
+& p(E = 1 \cond B = 0, C = 1) = 0.7\\
+& p(E = 1 \cond B = 1, C = 0) = 0.4\\
+& p(E = 1 \cond B = 1, C = 1) = 0.5\\
+& p(F = 1 \cond A = 0) = 0.5\\
+& p(F = 1 \cond A = 1) = 0.9\\
+& p(G = 1 \cond E = 0, F = 0) = 0.5\\
+& p(G = 1 \cond E = 0, F = 1) = 0\\
+& p(G = 1 \cond E = 1, F = 0) = 0.1\\
+& p(G = 1 \cond E = 1, F = 1) = 0.1
+\end{align*}
+
+
+\blu{Compute the following quantities}:
+\enum{
+\item $p(A = 0)$.
+\item $p(B = 1 \cond A = 0)$.
+\item $p(B = 1)$.
+\item $p(D = 1)$.
+\item $p(B = 1 \cond D = 1)$.
+\item $p(B = 1 \cond C = 1)$.
+\item $p(B = 1 \cond A = 0, C = 1, F = 1)$.
+}
+Hints: some of the above quantities can be read from the table, some require using that probabilities sum to 1, some require the marginalization rule, some require Bayes rule, some require using [conditional] independence, and some will be simplified using calculations from previous sub-questions.
+
+
+\subsection{Inpainting}
+
+
+The function \emph{example\_fil.jl} loads a variant of the MNIST dataset. It contains all the training images but the test images are missing their bottom half. Running this function fits an independent Bernoulli model to the training set, and then shows the result of applying the density model to ``fill in'' four random test examples. It performs pretty badly because the independent model can't condition on the known top-half of the images.
+\enum{
+\item Make a variant of the demo where you fit an inhomogeneous Markov chain to each image column. \blu{Hand in your code and an example of using this model to fill in 4 random test images.}
+\item Make a variant of the demo where you fit a directed acyclic graphical model to the data, using general discrete conditional probabilities and where the parents of pixel $(i,j)$ are the other 8 pixels in the region $(i-2:i,j-2:j)$.
+\blu{Hand in your code and an example of using this model to fill in 4 random test images.}
+\item Make a variant of the demo where you fit a sigmoid belief network to the data, where the parents of pixel $(i,j)$ are the other pixels in the region $(1:i,1:j)$.
+\blu{Hand in your code and an example of using this model to fill in 4 random test images.}
+}
+Hint:  you may find it helpful to make an $m$ by $m$ array called \emph{models} where element $(i,j)$ contains the model for pixel $(i,j)$. Included in \emph{a4.zip} are \emph{tabular.jl} and \emph{logreg.jl} which implement solving a supervised learning problem using the tabular and sigmoid method (respectively). You may want to debug on a smaller version of the training set, since the runtime of fitting these models is non-trivial (solving 784 supervised learning problems takes time, although you could parallelize to make this go very quickly).
 
 
 \section{Very-Short Answer Questions}
 
-Coming soon...
 
+
+Give a short and concise 1-sentence answer to the below questions.
+
+\enum{
+\item Describe a procedure to sample from the (continuous) exponential distribution.
+\item Describe a procedure to sample from the (discrete) Poisson distribution.
+\item What is an advantage of using Monte Carlo methods over the CK equations to estimate probabilities in Markov chains?
+\item Why don't we normally consider the stationary distribution of inhomogeneous Markov chains?
+\item Suppose we are using a hidden Markov model to track the location of a submarine using sonar measurements. What would $x_j$ and $z_j$ represent in this example?
+\item Given a Markov model over $x$ with discrete $x_j$, describe the parameterization of a hidden Markov models that defines the same distribution over $x$.
+\item What is an advantage and a disavantage of using logistic regression to parameterize the CPDs in DAGs compared to a tabular representation?
+\item When decoding a DAG, why does the order that we compute the messages matter?
+\item What is the relationship between Ising models and UGMs?
+\item What is the relevance of the Markov blanket in ICM?
+\item Why do we have a ``burn in'' phase for Gibbs sampling?
+}
 
 
 \section{Relevant Papers for Project}
