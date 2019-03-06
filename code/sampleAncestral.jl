@@ -22,15 +22,16 @@ function sampleConditioning(p1, pt, m, d) # m: intermediate state
 	return [x[m], x[d]]
 end
 
-function sampleBackwards(pt, xd, i, d)
+function sampleBackwards(p1, pt, xd, i, d, k)
 #pt: transition probability
 #xd: final state
 #i: initial time, d: final time
 	x = zeros(Int8, d-i+1)
+	M = marginalCK(p1, pt, d, k)
 	# at time 1
 	x[d-i+1] = xd
 	for j in d-1:-1:i
-		x[j-i+1] = sampleDiscrete((pt[:, x[j+1-i+1]])/sum(pt[:, x[j+1-i+1]]))
+		x[j-i+1] = sampleDiscrete(pt[:, x[j+1-i+1]].*M[:, j]./M[x[j+1-i+1],j+1])
 	end
 	return x[1]
 end

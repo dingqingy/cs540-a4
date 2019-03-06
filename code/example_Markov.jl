@@ -90,7 +90,7 @@ n_experiments = 10000
 sample = zeros(Int8, n_experiments)
 x_10 = 6
 for i = 1:n_experiments
-	sample[i] = sampleBackwards(pt, x_10, 5, 10)
+	sample[i] = sampleBackwards(p1, pt, x_10, 5, 10, k)
 end
 
 for i = 1:k
@@ -98,8 +98,8 @@ for i = 1:k
 end
 
 println("\n############ 1.2.3 ############")
-conditionals = forwardBackwards(pt, x_10, 5, 10, k)
-#conditionals = forwardBackwards(pt, 3, 50, 1, k)
+#conditionals = forwardBackwards(p1, pt, x_10, 5, 10, k)
+conditionals = forwardBackwards(p1, pt, 3, 50, 1, k)
 ## p(x_5|x_10=6)
 
 for i = 1:k

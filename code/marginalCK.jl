@@ -7,25 +7,37 @@ function marginalCK(p1, pt, d, k)
 	return M
 end
 
-function marginalBackward(pt, pd, d, k)
-	M = zeros(k, d)
-	M[:, d] = pd
-	pt_column_normalized = pt./sum(pt, dims=1)
-	for i = d-1:-1:1
-		M[:, i] = pt_column_normalized * M[:, i+1]
-	end
-	return M
-end
-
-function forwardBackwards(pt, c, j, d, k)
+function forwardBackwards(p1, pt, c, j, d, k)
 # compute p(x_j|x_d=c)
-	init_distribution = zeros(k)
-	init_distribution[c]=1
-	if (j>=d)
-		result = marginalCK(init_distribution, pt, j-d+1, k)[:, j-d+1]
-	else
-		result = marginalBackward(pt, init_distribution, d-j+1, k)[:, 1]
+	l = max(j, d)
+	M = zeros(k, l)
+	V = zeros(k, l)
+
+	M[:, 1] = p1
+
+	if d == 1
+		M[:, 1] = zeros(k, 1)
+		M[c, 1] = 1
 	end
 
-	return result
+	for i = 2:l
+		M[:, i] = pt' * M[:, i-1]
+		if i == d
+			M[:, i] = zeros(k, 1)
+			M[c, i] = 1
+		end
+	end
+
+	if j > d
+		V[:, j]=ones(k, 1)
+	else
+		V[c, d]=1
+		for i = d-1:-1:j
+			V[:, i]= pt * V[:, i+1]
+		end
+	end
+
+	P = M[:, j] .* V[:, j]
+	P_sum = sum(P)
+	return P/P_sum
 end
