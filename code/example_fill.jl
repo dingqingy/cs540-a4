@@ -6,10 +6,10 @@ data = load("../data/MNIST_images.jld")
 m = size(X,1)
 n = size(X,3)
 
-# Train an independent Bernoulli model
-# p_ij = zeros(m,m)
 include("inhomogMarkov.jl")
 subModel = Array{SampleModel}(undef,m,m)
+
+# Train an inhomog Markov chain
 for i in 1:m
     for j in 1:m
         if j != 1
@@ -19,6 +19,7 @@ for i in 1:m
         end
     end
 end
+
 
 # Fill-in some random test images
 t = size(Xtest,3)
@@ -35,7 +36,6 @@ for image in 1:4
     for i in 1:m
         for j in 1:m
             if isnan(I[i,j])
-                # I[i,j] = rand() < p_ij[i,j]
                 if j != 1
                     I[i,j] = subModel[i,j].sample(I[i,j-1])
                 else
@@ -46,5 +46,3 @@ for image in 1:4
     end
     imshow(I)
 end
-
-
