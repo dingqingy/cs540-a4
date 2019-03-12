@@ -8,11 +8,12 @@ function logReg(X,y)
 
 	# Add bias and convert to sparse for speed
 	X = sparse([ones(n,1) X])
+	println(size(X))
 	Xt = X'
 
 	# The loss function assumes yi in [-1,1] so convert to this
 	y[y .< .5] .= -1
-
+	# println(size(y))
 	# Initial guess and hyper-parameter
 	w = zeros(d+1,1)
 	lambda = 1
