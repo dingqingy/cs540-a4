@@ -8,8 +8,22 @@ Report is located in a4sol.pdf, and all code is located in code directory.
 
 ### Related files for each coding question
 
-1.3.3: example_generative.jl, gda.jl
+1.1.1: example_Markov.jl, sampleAncestral.jl
 
-1.3.4: example_generative.jl, tda.jl
+1.1.2: example_Markov.jl, marginalCK.jl
 
-2.2: example_gaussian.jl, GMM.jl, gaussian_density.jl
+1.1.3: example_Markov.jl, viterbiDecode.jl
+
+1.1.4: example_Markov.jl
+
+1.2.1: example_Markov.jl
+
+1.2.2: example_Markov.jl
+
+1.2.2: example_Markov.jl, marginalCK.jl
+
+2.3.1: example_fill.jl, inhomogMarkov.jl
+
+2.3.2: example_fill_DAG.jl, inhomogMarkov.jl
+
+2.3.3: example_fill_SBN.jl

@@ -13,9 +13,6 @@ subModel = Array{SampleModel}(undef,m,m)
 for i in 2:m
     for j in 2:m
         Xtrain = reshape(X[1:i, 1:j, :], (:, n))
-        # println(size(Xtrain))
-        # println(size(Xtrain[1:end-1, :]))
-        # println(size(Xtrain[end, :]))
         subModel[i,j] = logReg(Xtrain[1:end-1, :]', Xtrain[end, :])
     end
 end

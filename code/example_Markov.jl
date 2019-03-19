@@ -83,7 +83,7 @@ end
 marginal_cond = joint_count ./ accepted
 @printf("Number of accepted samples: %d\n", accepted)
 for i = 1:k
-	@printf("MCMC conditional marginal of state %d is %f\n", i, marginal_cond[i])
+	@printf("Using rejection sampling, MCMC conditional marginal of state %d is %f\n", i, marginal_cond[i])
 end
 
 println("\n############ 1.2.2 ############")
@@ -118,12 +118,12 @@ end
 
 backward_cond = acc ./ 10000.0
 for i = 1:k
-	@printf("MCMC conditional marginal of state %d is %f\n", i, backward_cond[i])
+	@printf("Using backward sampling, MCMC conditional marginal of state %d is %f\n", i, backward_cond[i])
 end
 
 println("\n############ 1.2.3 ############")
 # exact univariate conditional 
 uni_cond = forwardBackwards(p1, pt, 5, 10, 6, k)
 for i = 1:k
-	@printf("univariate conditionals of state %d is %f\n", i, uni_cond[i])
+	@printf("Using forwardBackwards, exact univariate conditionals of state %d is %f\n", i, uni_cond[i])
 end
